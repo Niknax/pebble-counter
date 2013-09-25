@@ -1,7 +1,6 @@
 /* Todo
- * add action bar icons
- * (adaptive fontsize)
  * snprintf correct number ofdigits
+ * disable buttons on MAX/MIN
  */
 
 #include "pebble_os.h"
@@ -22,8 +21,9 @@ PBL_APP_INFO(MY_UUID,
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_STANDARD_APP);
 
-#define MAX_DIGITS 4
 #define COUNTER_START 0
+#define COUNTER_MAX 12
+#define COUNTER_MIN -1
 #define HOLD_TO_REPEAT_MS 100
 // undefine to use hold-to-repeat
 //#define HOLD_JUMP 10
@@ -38,40 +38,26 @@ HeapBitmap button_image_reset;
 HeapBitmap button_image_minus;
 
 
-int digits(int num){
-	int digits = 0;
-//	if(num < 0)
-//		digits++; // signed
-
-	do{
-		num /= 10;
-		digits++;
-	} while(num != 0);
-
-	return digits;
-}
-
 void update_text_layer_with_int(const int num, TextLayer* text_layer){
 	char* buffer = "\0";
-	snprintf(buffer, (MAX_DIGITS+2 /* signed & \0 */)*sizeof(char), "%d", num);
+	snprintf(buffer, (6 /* signed & \0 */)*sizeof(char), "%d", num);
 	text_layer_set_text(text_layer, buffer);
 	layer_mark_dirty(&(text_layer->layer));
 }
 
 
 void up_click_handler(ClickRecognizerRef recognizer, Window *window){
-	if(digits(counter + 1) <= MAX_DIGITS){
+	if(counter + 1 <= COUNTER_MAX){
 		counter++;
 		update_text_layer_with_int(counter, &counter_layer);
 	}
 }
 #ifdef HOLD_JUMP
 void up_long_click_handler(ClickRecognizerRef recognizer, Window *window){
-	if(digits(counter + HOLD_JUMP) <= MAX_DIGITS)
+	if(counter + HOLD_JUMP < COUNTER_MAX)
 		counter += HOLD_JUMP;
 	else
-		while(digits(counter + 1) <= MAX_DIGITS)
-			counter++;
+		counter = COUNTER_MAX;
 	update_text_layer_with_int(counter, &counter_layer);
 }
 #endif
@@ -83,18 +69,17 @@ void select_click_handler(ClickRecognizerRef recognizer, Window *window){
 }
 
 void down_click_handler(ClickRecognizerRef recognizer, Window *window){
-	if(digits(counter - 1) <= MAX_DIGITS){
+	if(counter - 1 >= COUNTER_MIN){
 		counter--;
 		update_text_layer_with_int(counter, &counter_layer);
 	}
 }
 #ifdef HOLD_JUMP
 void down_long_click_handler(ClickRecognizerRef recognizer, Window *window){
-	if(digits(counter - HOLD_JUMP) <= MAX_DIGITS)
+	if(counter - HOLD_JUMP > COUNTER_MIN)
 		counter -= HOLD_JUMP;
 	else
-		while(digits(counter - 1) <= MAX_DIGITS)
-			counter--;
+		counter = COUNTER_MIN;
 	update_text_layer_with_int(counter, &counter_layer);
 }
 #endif
