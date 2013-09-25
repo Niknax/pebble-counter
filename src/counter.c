@@ -21,11 +21,13 @@ PBL_APP_INFO(MY_UUID,
 #define COUNTER_MAX 9999
 #define COUNTER_MIN 0
 #define HOLD_TO_REPEAT_MS 300
+#define MAX_DIGITS 4
 
 Window window;
 ActionBarLayer action_bar;
 TextLayer counter_layer;
 int counter;
+char counter_text[MAX_DIGITS + 2 /* sign & \0 */];
 
 HeapBitmap button_image_plus;
 HeapBitmap button_image_reset;
@@ -33,9 +35,8 @@ HeapBitmap button_image_minus;
 
 
 void update_text_layer_with_int(const int num, TextLayer* text_layer){
-	char* buffer = "\0";
-	snprintf(buffer, (6 /* signed & \0 */)*sizeof(char), "%d", num);
-	text_layer_set_text(text_layer, buffer);
+	snprintf(counter_text, (MAX_DIGITS + 2)*sizeof(char), "%d", num);
+	text_layer_set_text(text_layer, counter_text);
 	layer_mark_dirty(&(text_layer->layer));
 }
 

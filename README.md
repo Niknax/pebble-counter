@@ -10,6 +10,7 @@ Various types of behaviour can be configoured. To change these, edit the preproc
 * `#define COUNTER_MAX 9999`: The maximum value the counter may reach. It is recommended to use no more than 4 digits, otheriwse the number will overflow the TextLayer and be clipped.
 * `#define COUNTER_MIN -9999`: The minimum value the counter may reach. It is recommended to use no more than 4 digits (excluding the `-`), otherwiese the number will overflow the TextLayer and be clipped.
 * `#define HOLD_TO_REPEAT_MS 100`: The amount of milliseconds between two triggered clicks when holding the button.
+* `#define MAX_DIGITS`: The naximum amout of digits that can be written to the display. Necessary because of the memory management drawbacks of the Pebble
 * `//#define HOLD_JUMP 10`: If this value is defined, hold-to-repeat will be disabled and holding the buttons will jump the amount defined here.
 
 The branch `mtg-life-points` contains a set of values tuned specifically for use as a life points counter in the Magic: the Gathering trading card game. It also uses a different UUID, icon and name. Please Wizards of the Cost/Hasbro don't sue me :)
