@@ -1,8 +1,3 @@
-/* Todo
- * snprintf correct number ofdigits
- * disable buttons on MAX/MIN
- */
-
 #include "pebble_os.h"
 #include "pebble_app.h"
 #include "pebble_fonts.h"
