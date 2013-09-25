@@ -22,8 +22,8 @@ PBL_APP_INFO(MY_UUID,
              APP_INFO_STANDARD_APP);
 
 #define COUNTER_START 0
-#define COUNTER_MAX 12
-#define COUNTER_MIN -1
+#define COUNTER_MAX 9999
+#define COUNTER_MIN -9999
 #define HOLD_TO_REPEAT_MS 100
 // undefine to use hold-to-repeat
 //#define HOLD_JUMP 10
@@ -48,17 +48,29 @@ void update_text_layer_with_int(const int num, TextLayer* text_layer){
 
 void up_click_handler(ClickRecognizerRef recognizer, Window *window){
 	if(counter + 1 <= COUNTER_MAX){
+		if(counter == COUNTER_MIN)
+			action_bar_layer_set_icon(&action_bar, BUTTON_ID_DOWN, &button_image_minus.bmp);
+
 		counter++;
 		update_text_layer_with_int(counter, &counter_layer);
+
+		if(counter == COUNTER_MAX)
+			action_bar_layer_clear_icon(&action_bar, BUTTON_ID_UP);
 	}
 }
 #ifdef HOLD_JUMP
 void up_long_click_handler(ClickRecognizerRef recognizer, Window *window){
+	if(counter == COUNTER_MIN)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_DOWN, &button_image_minus.bmp);
+
 	if(counter + HOLD_JUMP < COUNTER_MAX)
 		counter += HOLD_JUMP;
 	else
 		counter = COUNTER_MAX;
 	update_text_layer_with_int(counter, &counter_layer);
+
+	if(counter == COUNTER_MAX)
+		action_bar_layer_clear_icon(&action_bar, BUTTON_ID_UP);
 }
 #endif
 
@@ -66,21 +78,43 @@ void select_click_handler(ClickRecognizerRef recognizer, Window *window){
 	counter = COUNTER_START;
 	text_layer_set_text(&counter_layer, STR(COUNTER_START));
 	layer_mark_dirty(&counter_layer.layer);
+
+	if(counter < COUNTER_MAX)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_UP, &button_image_plus.bmp);
+	else
+		action_bar_layer_clear_icon(&action_bar, BUTTON_ID_UP);
+
+	if(counter > COUNTER_MIN)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_DOWN, &button_image_minus.bmp);
+	else
+		action_bar_layer_clear_icon(&action_bar, BUTTON_ID_DOWN);
 }
 
 void down_click_handler(ClickRecognizerRef recognizer, Window *window){
 	if(counter - 1 >= COUNTER_MIN){
+		if(counter == COUNTER_MAX)
+			action_bar_layer_set_icon(&action_bar, BUTTON_ID_UP, &button_image_plus.bmp);
+
 		counter--;
 		update_text_layer_with_int(counter, &counter_layer);
+
+		if(counter == COUNTER_MIN)
+			action_bar_layer_clear_icon(&action_bar, BUTTON_ID_DOWN);
 	}
 }
 #ifdef HOLD_JUMP
 void down_long_click_handler(ClickRecognizerRef recognizer, Window *window){
+	if(counter == COUNTER_MAX)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_UP, &button_image_plus.bmp);
+
 	if(counter - HOLD_JUMP > COUNTER_MIN)
 		counter -= HOLD_JUMP;
 	else
 		counter = COUNTER_MIN;
 	update_text_layer_with_int(counter, &counter_layer);
+
+	if(counter == COUNTER_MIN)
+		action_bar_layer_clear_icon(&action_bar, BUTTON_ID_DOWN);
 }
 #endif
 
@@ -136,16 +170,18 @@ void handle_init(AppContextRef ctx) {
 	action_bar_layer_init(&action_bar);
 	action_bar_layer_set_click_config_provider(&action_bar, click_config_provider);
 
-	action_bar_layer_set_icon(&action_bar, BUTTON_ID_UP, &button_image_plus.bmp);
 	action_bar_layer_set_icon(&action_bar, BUTTON_ID_SELECT, &button_image_reset.bmp);
-	action_bar_layer_set_icon(&action_bar, BUTTON_ID_DOWN, &button_image_minus.bmp);
+	if(counter < COUNTER_MAX)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_UP, &button_image_plus.bmp);
+	if(counter > COUNTER_MIN)
+		action_bar_layer_set_icon(&action_bar, BUTTON_ID_DOWN, &button_image_minus.bmp);
 
 
 	// Setup the text layer
 	text_layer_init(&counter_layer, GRect(
-	/* offset x */  1, // 3px spacing
+	/* offset x */  1, // 1px spacing
 	/* offset y */  (SCREEN_HEIGHT - STATUS_BAR_HEIGHT)/2 - 50/2,
-	/* width */     SCREEN_WIDTH - ACTION_BAR_WIDTH - 1*2, // 3px spacing
+	/* width */     SCREEN_WIDTH - ACTION_BAR_WIDTH - 1*2, // 1px spacing
 	/* height */    50
 	));
 	text_layer_set_text_alignment(&counter_layer, GTextAlignmentCenter);
