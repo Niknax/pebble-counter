@@ -14,19 +14,18 @@
 #define STR_HELPER(x) #x
 #define STR(x) STR_HELPER(x)
 
-#define MY_UUID { 0x0D, 0xB0, 0x40, 0x0D, 0x77, 0x8E, 0x40, 0xBC, 0x8F, 0x6B, 0x17, 0x4E, 0xB9, 0xF7, 0x90, 0xEB }
+//* MagicL the Gathering Version
+#define MY_UUID { 0x06, 0xBB, 0x91, 0xA7, 0x54, 0x4A, 0x4F, 0x5D, 0xAB, 0xEF, 0xF2, 0xEF, 0x28, 0x94, 0xF5, 0x41 }
 PBL_APP_INFO(MY_UUID,
-             "Counter", "Ps0ke",
-             1, 0, /* App version */
+             "MtG Life Points", "Ps0ke",
+             1, 0, /* App Version */
              RESOURCE_ID_IMAGE_MENU_ICON,
              APP_INFO_STANDARD_APP);
 
-#define COUNTER_START 0
+#define COUNTER_START 20
 #define COUNTER_MAX 9999
-#define COUNTER_MIN -9999
-#define HOLD_TO_REPEAT_MS 100
-// undefine to use hold-to-repeat
-//#define HOLD_JUMP 10
+#define COUNTER_MIN 0
+#define HOLD_TO_REPEAT_MS 300
 
 Window window;
 ActionBarLayer action_bar;
